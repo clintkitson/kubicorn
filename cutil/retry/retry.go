@@ -61,7 +61,7 @@ func (r *Retrier) RunRetry() error {
 	}()
 
 	for i := 0; i < r.retries; i++ {
-		err := r.retryable.Try()
+		err := r.retryable.Try()		
 		if err != nil {
 			logger.Info("Retryable error: %v", err)
 			time.Sleep(time.Duration(r.sleepSeconds) * time.Second)
