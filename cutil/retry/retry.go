@@ -54,22 +54,22 @@ func (r *Retrier) RunRetry() error {
 	finish := make(chan bool, 1)
 	go func() {
 		select {
-			case <-finish:
-				return
-			case <-time.After(600 * time.Second):
-				return
-			default:
-				for {
-					if sigHandler.GetState() != 0 {
-						logger.Critical("detected signal. retry failed.")
-						os.Exit(1)
-					}
+		case <-finish:
+			return
+		case <-time.After(600 * time.Second):
+			return
+		default:
+			for {
+				if sigHandler.GetState() != 0 {
+					logger.Critical("detected signal. retry failed.")
+					os.Exit(1)
 				}
-		}		
+			}
+		}
 	}()
 
 	for i := 0; i < r.retries; i++ {
-		err := r.retryable.Try()		
+		err := r.retryable.Try()
 		if err != nil {
 			logger.Info("Retryable error: %v", err)
 			time.Sleep(time.Duration(r.sleepSeconds) * time.Second)
